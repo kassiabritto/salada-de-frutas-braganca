@@ -8,25 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Separa eventos e delivery
+      - name: Aplica atualizacoes
         run: |
-          python3 - <<'PY'
-          import os
-          R="var d=location.hash==='#delivery'"
-          s=open('eventos/index.html',encoding='utf-8').read()
-          s=s.replace("esc(i.n)++'","esc(i.n)+'")
-          assert R in s
-          ev=s.replace(R,"var d=false").replace('href="#delivery"','href="../delivery/"')
-          de=s.replace(R,"var d=true").replace('<a class="back" href="#">← Voltar para eventos</a>','<a class="back" href="../eventos/">← Encomendas para eventos</a>')
-          de=de.replace('Saladas de frutas para eventos em Fortaleza</title>','Pedido para retirada</title>')
-          os.makedirs('delivery',exist_ok=True)
-          open('eventos/index.html','w',encoding='utf-8').write(ev)
-          open('delivery/index.html','w',encoding='utf-8').write(de)
-          t=open('index.html',encoding='utf-8').read().replace('href="eventos/#delivery"','href="delivery/"')
-          open('index.html','w',encoding='utf-8').write(t)
-          PY
+          python3 patch.py eventos/index.html delivery/index.html
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
+          git rm -q --cached patch.py || true
+          rm -f patch.py
           git add -A
-          git commit -m "Separa delivery de eventos" || true
+          git commit -m "Atualiza delivery" || true
           git push
