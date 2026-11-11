@@ -275,7 +275,6 @@ details p{padding:0 16px 16px;font-size:15px}
 <h1>Faça seu pedido</h1><p>Retirada na loja · pedidos das 13h às 18h40 · pronto em 20 minutos</p><div id="openb" class="openb"></div></div>
 <div class="w" style="padding-bottom:110px">
   <div class="ruleb"><b>Como funciona:</b> escolha seus itens e envie o pedido para o nosso WhatsApp. A salada é montada na hora e fica pronta para retirada 20 minutos depois do pedido. Pedido mínimo de R$ 15,00. Retirada sem custo na loja, pessoalmente ou por app de entrega (99, Uber Flash…) chamado por você. A entrega não está inclusa.</div>
-  <div class="pay"><div class="pr"><span class="pl">Retirada na loja</span><b>Rua Senador Alencar, 909 · Centro, Fortaleza</b><a class="pa" href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Senador+Alencar+909+Centro+Fortaleza" target="_blank" rel="noopener">Abrir no mapa</a></div><div class="pr"><span class="pl">Pagamento: Pix ou link</span><b>Pix, chave e-mail: <span class="pk">saladadefrutasbraganca@gmail.com</span></b><small class="pn">Prefere pagar por link de pagamento? Peça pelo WhatsApp que enviamos o link.</small><button type="button" class="pa cpx">Copiar chave Pix</button></div></div>
   <div id="menu"></div>
   <a class="back" href="../eventos/">← Encomendas para eventos</a>
 </div>
@@ -289,6 +288,13 @@ details p{padding:0 16px 16px;font-size:15px}
   <div class="arow"><div class="st"><button type="button" id="aMinus">–</button><input id="aQty" value="1" readonly><button type="button" id="aPlus">+</button></div><button type="button" class="cta green" id="aAdd" style="flex:1"></button></div>
 </div></div>
 
+<div id="doneSheet" class="ov" hidden><div class="sheet">
+  <h3>Pedido enviado!</h3>
+  <p class="ad">Falta só pagar e retirar. Siga os passos:</p>
+  <div class="pr"><span class="pl">1 · Pague pelo Pix</span><b>Chave e-mail:<br><span class="pk">saladadefrutasbraganca@gmail.com</span></b><button type="button" class="pa cpx" id="dpix">Copiar chave Pix</button><small class="pn">Prefere link de pagamento? Peça pelo WhatsApp que enviamos o link. Depois de pagar, mande o comprovante.</small></div>
+  <div class="pr" style="margin-top:10px"><span class="pl">2 · Retire na loja em 20 minutos</span><b>Rua Senador Alencar, 909 · Centro, Fortaleza</b><a class="pa" id="dmap" href="https://www.google.com/maps/search/?api=1&amp;query=Rua+Senador+Alencar+909+Centro+Fortaleza" target="_blank" rel="noopener">Abrir no Google Maps</a> <button type="button" class="pa" id="dcopa">Copiar endereço</button></div>
+  <button type="button" class="cta green" id="dclose" style="margin-top:14px;width:100%">Fechar</button>
+</div></div>
 <div id="cartSheet" class="ov" hidden><div class="sheet big">
   <button class="x" type="button" id="cartX" aria-label="Fechar">×</button>
   <h3>Meu pedido</h3>
@@ -306,7 +312,7 @@ details p{padding:0 16px 16px;font-size:15px}
   <div class="fld"><label for="fh">Horário</label><select id="fh"></select></div></div>
   <small class="hh">Horário desejado, das 13h às 19h. Confirmamos pelo WhatsApp.</small>
   <div class="fld"><label for="fo">Observações</label><textarea id="fo" rows="2" placeholder="Alguma observação?"></textarea></div>
-  <div class="note"><b>Valor dos itens, sem retirada nem entrega.</b> Sua salada é montada na hora e fica pronta para retirada 20 minutos depois do pedido. Retirada na loja: Rua Senador Alencar, 909 · Centro, Fortaleza. Pagamento por Pix, chave e-mail <span class="pk">saladadefrutasbraganca@gmail.com</span>, ou por link de pagamento (peça pelo WhatsApp). Depois de pagar, mande o comprovante pelo WhatsApp.<br><button type="button" class="pa cpx" style="margin-top:8px">Copiar chave Pix</button></div>
+  <div class="note"><b>Valor dos itens, sem retirada nem entrega.</b> Sua salada é montada na hora e fica pronta para retirada 20 minutos depois do pedido. Depois de enviar, mostramos a chave Pix e o endereço de retirada.</div>
   <div id="cerr" class="cerr"></div>
   <a class="cta green off" id="sendO" href="#" target="_blank" rel="noopener">Enviar pedido no WhatsApp</a>
 </div></div>
@@ -441,7 +447,9 @@ details p{padding:0 16px 16px;font-size:15px}
       btn.href='https://wa.me/'+NUM+'?text='+encodeURIComponent(m);
     }else btn.href='#';
   }
-  $('sendO').addEventListener('click',function(e){if($('sendO').getAttribute('aria-disabled')==='true'){e.preventDefault();valid();var s=sub();if(s>=MINV&&!$('cerr').textContent){}}});
+  $('dclose').onclick=function(){$('doneSheet').hidden=true};
+  $('dcopa').onclick=function(){var b=this,k='Rua Senador Alencar, 909 - Centro, Fortaleza',o=b.textContent,ok=function(){b.textContent='Endereço copiado!';setTimeout(function(){b.textContent=o},1800)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(k).then(ok,fb)}else fb();function fb(){var t=document.createElement('textarea');t.value=k;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(x){}document.body.removeChild(t);ok()}};
+  $('sendO').addEventListener('click',function(e){if($('sendO').getAttribute('aria-disabled')!=='true'){setTimeout(function(){$('cartSheet').hidden=true;$('doneSheet').hidden=false},900)}if($('sendO').getAttribute('aria-disabled')==='true'){e.preventDefault();valid();var s=sub();if(s>=MINV&&!$('cerr').textContent){}}});
   document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.cpx');if(!b)return;var k='saladadefrutasbraganca@gmail.com',done=function(){var o=b.textContent;b.textContent='Chave copiada!';setTimeout(function(){b.textContent=o},1800)};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(k).then(done,function(){fb()})}else fb();
     function fb(){var t=document.createElement('textarea');t.value=k;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(x){}document.body.removeChild(t);done()}});
