@@ -1,0 +1,22 @@
+name: unzip-site
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - salada-site.zip
+permissions:
+  contents: write
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          unzip -o salada-site.zip
+          rm -f _redirects salada-site.zip
+          sed -i 's#href="/eventos/#href="eventos/#g' index.html
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Publica o site" || true
+          git push
